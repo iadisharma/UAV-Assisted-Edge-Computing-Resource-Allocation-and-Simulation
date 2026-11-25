@@ -1,4 +1,4 @@
-**Project completed at CSIR CEERI in 2023.**
+**Project completed at CSIR CEERI in Dec 2022. Publishing on Github for personal record.**
 
 # UAV-Assisted Edge Computing: Resource Allocation and Simulation
 
