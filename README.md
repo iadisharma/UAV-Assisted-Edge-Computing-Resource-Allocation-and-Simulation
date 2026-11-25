@@ -21,6 +21,20 @@ Requests are evaluated against the available servers and memory configurations. 
 
 A typical run loads or generates a scenario, moves the UAVs, identifies covered users, evaluates resource allocation, and saves the resulting assignments and plots.
 
+```mermaid
+flowchart LR
+    UE["User requests"] --> UAV["UAV servers"]
+    UAV --> FS["Fog servers"]
+    FS --> Cloud["Cloud server"]
+    Config["Latency, memory and energy parameters"] --> Allocation["Resource allocation: SPA or DTS variants"]
+    UAV -.-> Allocation
+    FS -.-> Allocation
+    Cloud -.-> Allocation
+    Allocation --> Results["Assignments, profit and energy cost"]
+```
+
+Solid arrows across the top show the communication tiers. Dotted links connect the computing tiers to the allocation step, which decides where requests are served.
+
 ## Implemented methods
 
 | Method | Implementation |
@@ -50,6 +64,22 @@ The table below reports total system profit from the saved [user-count experimen
 At 700 users, recorded SPA profit is **235.28% higher than DTS** and **73.55% of the Gurobi reference**. These are calculated as `(SPA / DTS - 1) × 100` and `(SPA / reference) × 100`, respectively. SPA exceeds both DTS variants at all seven saved user counts.
 
 These figures describe the stored experiment, not averages across repeated trials. The JSON does not provide seeds, confidence intervals, or solver gaps. The current user-count script also assigns two fog servers at 300 users and one at the other counts, so it should not be treated as a strictly fixed-infrastructure comparison. The Gurobi result is a reference for the local allocation problem, not a guarantee of globally optimal UAV placement.
+
+## Results at a glance
+
+![Line chart comparing SPA, DTS, Improved DTS, and the Gurobi reference across 100 to 700 users](docs/images/profit_by_user_count.png)
+
+SPA records higher profit than both DTS variants at every saved user count. The Gurobi reference remains above SPA. This is the same data as the metrics table, including the server-count caveat at 300 users.
+
+![Line chart comparing total system profit across fog-server bandwidth multipliers for all four methods](docs/images/profit_by_bandwidth.png)
+
+In the saved bandwidth sweep, SPA stays close to the Gurobi reference at the nonzero multipliers. The values come from the [bandwidth results](comparative_plots/bandwidth_comparison_plot_folder/accumulated_data.json); they belong to a separate experiment from the user-count comparison.
+
+Both charts are drawn directly from the saved JSON files. To regenerate them without running the simulation:
+
+```bash
+python docs/plot_readme_results.py
+```
 
 Other recorded outputs include:
 
